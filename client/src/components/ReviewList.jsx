@@ -39,6 +39,7 @@ class ReviewList extends React.Component {
       reviewAvg: 0,
       reviewCounts: {},
       reviewEmail: '',
+
     };
 
     this.getReviewsByProductID = this.getReviewsByProductID.bind(this);
@@ -50,15 +51,25 @@ class ReviewList extends React.Component {
     this.writeReview = this.writeReview.bind(this);
     this.changeProduct = this.changeProduct.bind(this);
     this.toggleReview = this.toggleReview.bind(this);
+    this.watchDiv = this.watchDiv.bind(this);
   }
 
   componentDidMount() {
     // this.getAllReviews();
     const { productID } = this.state;
     this.getReviewsByProductID(productID);
-    $('body').on('change', '#Walker', (event) => {
-      console.log('IN REVIEW LIST: ', event);
-    });
+    // $('body').on('DOMSubtreeModified', '#Walker', (event) => {
+    //   // console.log(event.currentTarget.className)
+    //   this.setState({
+    //     productID: event.currentTarget.className,
+    //   },() => {
+    //     // eslint-disable-next-line react/destructuring-assignment
+    //     this.getReviewsByProductID(this.state.productID);
+    //     // this.getAverageRating();
+    //   });
+    // });
+    this.watchDiv('Walker');
+
     // window.addEventListener('message', this.initPort);
   }
 
@@ -68,7 +79,7 @@ class ReviewList extends React.Component {
   // (e.g. # of 5 star reviews, # of 4 star reviews, etc)
 
   getReviewsByProductID(state) {
-    axios.get('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
+    axios.get('/reviews', {
       params: {
         productID: state,
       },
@@ -117,6 +128,31 @@ class ReviewList extends React.Component {
       });
   }
 
+  watchDiv(div) {
+    // Select the node that will be observed for mutations
+    const targetNode = document.getElementById(`${div}`);
+
+    // Options for the observer (which mutations to observe)
+    const config = { attributes: true, childList: false, subtree: false };
+
+    // Callback function to execute when mutations are observed
+    let callback = function(mutationsList, observer) {
+      console.log(mutationsList[0].target.className);
+      if (mutationsList[0].attributeName === 'class') {
+        this.setState({
+          productID: Number.parseInt(mutationsList[0].target.className)
+        });
+        this.getReviewsByProductID(this.state.productID);
+      }
+    };
+    callback = callback.bind(this);
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(callback);
+
+    // Start observing the target node for configured mutations
+    observer.observe(targetNode, config);
+  }
+
   // uses the data entered on the 'ReviewForm' component that is rendered to state,
   // and sends a post request to write a new review into the DB
   writeReview(event) {
@@ -126,7 +162,7 @@ class ReviewList extends React.Component {
       productID, reviewHeading, reviewText, reviewRating, reviewUsername,
       reviewRecommended, reviewQuality, reviewValue, reviewEaseOfUse, reviewImages,
     } = this.state;
-    axios.post('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
+    axios.post('/reviews', {
       productID,
       reviewHeading,
       reviewText,
@@ -211,13 +247,17 @@ class ReviewList extends React.Component {
   // this was used in order for me to test out switching up the productID in state
   changeProduct(event) {
     const newProductID = event.target.value;
-    this.setState({
-      productID: newProductID,
-    }, () => {
-      // eslint-disable-next-line react/destructuring-assignment
-      this.getReviewsByProductID(this.state.productID);
-      // this.getAverageRating();
-    });
+    // window.productID = newProductID;
+    // var div = document.getElementById('Walker');
+    // div.className = newProductID;
+    // console.log("WINDOW.PRODUCT ID IS BEING SET TO: ", window.productID);
+    // this.setState({
+    //   productID: newProductID,
+    // }, () => {
+    //   // eslint-disable-next-line react/destructuring-assignment
+    //   this.getReviewsByProductID(this.state.productID);
+    //   // this.getAverageRating();
+    // });
   }
 
   // used to hide the div with the 'ReviewForm component'
