@@ -39,7 +39,6 @@ class ReviewList extends React.Component {
       reviewAvg: 0,
       reviewCounts: {},
       reviewEmail: '',
-
     };
 
     this.getReviewsByProductID = this.getReviewsByProductID.bind(this);
@@ -58,19 +57,11 @@ class ReviewList extends React.Component {
     // this.getAllReviews();
     const { productID } = this.state;
     this.getReviewsByProductID(productID);
-    // $('body').on('DOMSubtreeModified', '#Walker', (event) => {
-    //   // console.log(event.currentTarget.className)
-    //   this.setState({
-    //     productID: event.currentTarget.className,
-    //   },() => {
-    //     // eslint-disable-next-line react/destructuring-assignment
-    //     this.getReviewsByProductID(this.state.productID);
-    //     // this.getAverageRating();
-    //   });
+    // $('body').on('change', '#Walker', (event) => {
+    //   console.log('IN REVIEW LIST: ', event);
     // });
-    this.watchDiv('Walker');
-
     // window.addEventListener('message', this.initPort);
+    this.watchDiv('Walker');
   }
 
   // gets reviews by the product ID that is currently in state
@@ -162,7 +153,7 @@ class ReviewList extends React.Component {
       productID, reviewHeading, reviewText, reviewRating, reviewUsername,
       reviewRecommended, reviewQuality, reviewValue, reviewEaseOfUse, reviewImages,
     } = this.state;
-    axios.post('/reviews', {
+    axios.post('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
       productID,
       reviewHeading,
       reviewText,
@@ -247,16 +238,14 @@ class ReviewList extends React.Component {
   // this was used in order for me to test out switching up the productID in state
   changeProduct(event) {
     const newProductID = event.target.value;
-    // window.productID = newProductID;
-    // var div = document.getElementById('Walker');
-    // div.className = newProductID;
-    // console.log("WINDOW.PRODUCT ID IS BEING SET TO: ", window.productID);
+    var div = document.getElementById('Walker');
+    div.className = event.target.value;
     // this.setState({
     //   productID: newProductID,
     // }, () => {
     //   // eslint-disable-next-line react/destructuring-assignment
     //   this.getReviewsByProductID(this.state.productID);
-    //   // this.getAverageRating();
+      // this.getAverageRating();
     // });
   }
 
