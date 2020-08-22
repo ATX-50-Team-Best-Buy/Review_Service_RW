@@ -35,6 +35,7 @@ class ReviewList extends React.Component {
       reviewAvg: 0,
       reviewCounts: {},
       reviewEmail: '',
+      reviewID: '',
     };
 
     this.getReviewsByProductID = this.getReviewsByProductID.bind(this);
@@ -235,20 +236,20 @@ class ReviewList extends React.Component {
     });
   }
 
-  addHelpfulRating(id) {
-    const { productID } = this.state;
+  addHelpfulRating(productID, reviewID) {
+    // console.log('PRODUCTID: ', productID)
+    // console.log('REVIEWID: ', reviewID)
     axios.post('http://localhost:4000/helpful', {
       productID,
-      _id: id,
+      _id: reviewID,
     })
       .then(() => this.getReviewsByProductID(productID));
-      console.log(this.state.reviews)
   }
 
-  addUnhelpfulRating() {
-    const { productID } = this.state;
+  addUnhelpfulRating(productID, reviewID) {
     axios.post('http://localhost:4000/unhelpful', {
       productID,
+      _id: reviewID,
     })
       .then(() => this.getReviewsByProductID(productID));
   }

@@ -6,6 +6,7 @@ import React from 'react';
 import '../styles/Review.css';
 import StarRatings from 'react-star-ratings';
 import Helpful from './Helpful.jsx';
+import Unhelpful from './Unhelpful.jsx';
 
 const Review = ({ review, addHelpfulRating, addUnhelpfulRating }) => {
   return (
@@ -52,16 +53,12 @@ const Review = ({ review, addHelpfulRating, addUnhelpfulRating }) => {
         <div className="reviewBody footer">
           <Helpful
             addHelpfulRating={addHelpfulRating}
-            reviewHelpfulCount={review.reviewHelpful}
-            reviewID={review._id}
+            review={review}
           />
-
-          <button className="reviewButtons">
-            unhelpful
-            (
-            {review.reviewUnhelpful}
-            )
-          </button>
+          <Unhelpful
+            addUnhelpfulRating={addUnhelpfulRating}
+            review={review}
+          />
           <button className="reviewButtons">report</button>
           <button className="reviewButtons">comment</button>
           <button className="reviewButtons">show comment</button>

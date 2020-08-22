@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
 /* eslint-disable radix */
 const express = require('express');
@@ -57,8 +58,17 @@ app.post('/reviews', (req, res) => {
 });
 
 app.post('/helpful', (req, res) => {
-  console.log("REQUEST IN SERVER: ", req.body)
-  db.addHelpfulRating(req.body.productID)
+  db.addHelpfulRating(req.body.productID, req.body._id)
+    .then((confirmation) => {
+      res.status(200).send(confirmation);
+    })
+    .catch((error) => {
+      res.status(500).send('Error on server adding helpful rating: ', error);
+    });
+});
+
+app.post('/unhelpful', (req, res) => {
+  db.addUnhelpfulRating(req.body.productID, req.body._id)
     .then((confirmation) => {
       res.status(200).send(confirmation);
     })
