@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+#Walker {
+  display: flex;
+  justify-content: center;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -30,6 +35,7 @@
 
 .reviewAccordion {
   font-size: 20px;
+  font-weight: bold;
   padding: 5px;
   margin-bottom: 2px;
   border-top: 1px solid rgb(197, 203, 213);

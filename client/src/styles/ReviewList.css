@@ -35,7 +35,9 @@
 
 .avgRatingScore{
   font-size: 20px;
+  font-weight: normal;
 }
+
 .widget-svg{
   height: 15px;
   width: 15px;

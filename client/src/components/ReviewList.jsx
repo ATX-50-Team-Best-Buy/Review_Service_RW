@@ -47,6 +47,8 @@ class ReviewList extends React.Component {
     // this.changeProduct = this.changeProduct.bind(this);
     this.toggleReview = this.toggleReview.bind(this);
     this.watchDiv = this.watchDiv.bind(this);
+    this.addHelpfulRating = this.addHelpfulRating.bind(this);
+    this.addUnhelpfulRating = this.addUnhelpfulRating.bind(this);
   }
 
   componentDidMount() {
@@ -57,7 +59,7 @@ class ReviewList extends React.Component {
     //   console.log('IN REVIEW LIST: ', event);
     // });
     // window.addEventListener('message', this.initPort);
-    this.watchDiv('searchbar_app');
+    this.watchDiv('Walker');
   }
 
   // gets reviews by the product ID that is currently in state
@@ -66,7 +68,8 @@ class ReviewList extends React.Component {
   // (e.g. # of 5 star reviews, # of 4 star reviews, etc)
 
   getReviewsByProductID(state) {
-    axios.get('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
+    // axios.get('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
+    axios.get('http://localhost:4000/reviews', {
       params: {
         productID: state,
       },
@@ -154,7 +157,7 @@ class ReviewList extends React.Component {
       productID, reviewHeading, reviewText, reviewRating, reviewUsername,
       reviewRecommended, reviewQuality, reviewValue, reviewEaseOfUse, reviewImages,
     } = this.state;
-    axios.post('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
+    axios.post('http://localhost:4000/reviews', {
       productID,
       reviewHeading,
       reviewText,
@@ -232,18 +235,23 @@ class ReviewList extends React.Component {
     });
   }
 
-  // may or may not need this once we combine
-  // this was used in order for me to test out switching up the productID in state
-  // changeProduct(event) {
-  //   const newProductID = event.target.value;
-  //   this.setState({
-  //     productID: newProductID,
-  //   }, () => {
-  //     // eslint-disable-next-line react/destructuring-assignment
-  //     this.getReviewsByProductID(this.state.productID);
-  //     // this.getAverageRating();
-  //   });
-  // }
+  addHelpfulRating(id) {
+    const { productID } = this.state;
+    axios.post('http://localhost:4000/helpful', {
+      productID,
+      _id: id,
+    })
+      .then(() => this.getReviewsByProductID(productID));
+      console.log(this.state.reviews)
+  }
+
+  addUnhelpfulRating() {
+    const { productID } = this.state;
+    axios.post('http://localhost:4000/unhelpful', {
+      productID,
+    })
+      .then(() => this.getReviewsByProductID(productID));
+  }
 
   // used to hide the div with the 'ReviewForm component'
   toggleReview(event) {
@@ -309,7 +317,14 @@ class ReviewList extends React.Component {
         <div style={{ borderBottom: '1px solid rgb(197, 203, 213)' }}>
           <FilterReview />
         </div>
-        {reviews.map((review, idx) => <Review review={review} key={idx} />)}
+        {reviews.map((review, idx) => (
+          <Review
+            review={review}
+            key={idx}
+            addHelpfulRating={this.addHelpfulRating}
+            addUnhelpfulRating={this.addUnhelpfulRating}
+          />
+        ))}
         <div style={{ textAlign: 'center' }}>
           <button className="showReviewButtons show">Show More</button>
           <button className="showReviewButtons" onClick={this.toggleReview}>Write a Review</button>
@@ -330,6 +345,8 @@ class ReviewList extends React.Component {
           reviewEaseOfUseDefault={reviewEaseOfUse}
           reviewUsername={reviewUsername}
           reviewEmail={reviewEmail}
+          addHelpfulRating={this.addHelpfulRating}
+          addUnhelpfulRating={this.addUnhelpfulRating}
         />
       </div>
     );

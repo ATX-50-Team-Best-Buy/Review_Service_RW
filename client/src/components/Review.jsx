@@ -1,11 +1,13 @@
+/* eslint-disable import/extensions */
 /* eslint-disable react/button-has-type */
 /* eslint-disable arrow-body-style */
 /* eslint-disable react/prop-types */
 import React from 'react';
 import '../styles/Review.css';
 import StarRatings from 'react-star-ratings';
+import Helpful from './Helpful.jsx';
 
-const Review = ({ review }) => {
+const Review = ({ review, addHelpfulRating, addUnhelpfulRating }) => {
   return (
     <div className="reviewContainer">
       <div className="reviewHeader">
@@ -48,12 +50,12 @@ const Review = ({ review }) => {
         {review.reviewText}
         <br />
         <div className="reviewBody footer">
-          <button style={{ border: '1px solid #c5cbd5', padding: '0 7px' }} className="reviewButtons">
-            helpful
-            (
-            {review.reviewHelpful}
-            )
-          </button>
+          <Helpful
+            addHelpfulRating={addHelpfulRating}
+            reviewHelpfulCount={review.reviewHelpful}
+            reviewID={review._id}
+          />
+
           <button className="reviewButtons">
             unhelpful
             (

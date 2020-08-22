@@ -21,7 +21,7 @@ app.use(express.json());
 app.get('/reviews', (req, res) => {
   req.query.productID = Number.parseInt(req.query.productID);
   // console.log('1111111111111111');
-  console.log('REQUEST IN SERVER: ', req.query);
+  // console.log('REQUEST IN SERVER: ', req.query);
   // db.getAllReviews()
   db.getReviewsByProductID(req.query)
     .then((reviews) => {
@@ -53,6 +53,17 @@ app.post('/reviews', (req, res) => {
     })
     .catch((error) => {
       res.status(500).send('Error on server writing review: ', error);
+    });
+});
+
+app.post('/helpful', (req, res) => {
+  console.log("REQUEST IN SERVER: ", req.body)
+  db.addHelpfulRating(req.body.productID)
+    .then((confirmation) => {
+      res.status(200).send(confirmation);
+    })
+    .catch((error) => {
+      res.status(500).send('Error on server adding helpful rating: ', error);
     });
 });
 

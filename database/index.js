@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable no-console */
 const mongoose = require('mongoose');
 
@@ -73,6 +74,9 @@ db.once('open', () => {
     return product.save();
   };
 
+  const addHelpfulRating = (productID, id) => {
+    return Review.updateOne({ productID: productID, _id: id }, { $inc: { reviewHelpful: 1 } });
+  };
   // let saveToDB = (model) => {
   //   var product = new Product({
   //     uniqueID: model.uniqueID,
@@ -124,6 +128,7 @@ db.once('open', () => {
   // })
 
   // module.exports.seed = seed;
+  module.exports.addHelpfulRating = addHelpfulRating;
   module.exports.productSchema = productSchema;
   module.exports.Product = Product;
   module.exports.getAllReviews = getAllReviews;
