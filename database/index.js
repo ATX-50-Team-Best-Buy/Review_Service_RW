@@ -3,8 +3,8 @@
 const mongoose = require('mongoose');
 
 // mongoose.connect('mongodb://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/bestbuy', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect('mongodb://localhost/bestbuy');
-// const mock = require('../reviewData.js');
+mongoose.connect('mongodb://localhost/bestbuy', { useNewUrlParser: true, useUnifiedTopology: true });
+const mock = require('../reviewData.js');
 
 const db = mongoose.connection;
 
@@ -69,8 +69,9 @@ db.once('open', () => {
       reviewValue: review.reviewValue,
       reviewEaseOfUse: review.reviewEaseOfUse,
       reviewImages: review.reviewImages,
-      // reviewCreatedAt: review.createdAt
+      reviewCreatedAt: new Date(),
     });
+    Review.updateOne({ _id: product._id}, {reviewCreatedAt: product._id.getTimestamp()});
     return product.save();
   };
 
@@ -110,7 +111,7 @@ db.once('open', () => {
 
   const getAllReviews = () => Review.find();
 
-  const getReviewsByProductID = (query) => Review.find(query);
+  const getReviewsByProductID = (query) => Review.find(query).sort({'reviewCreatedAt': -1});
 
   // let writeReview = (review => {
   //   let newReview = new Review({

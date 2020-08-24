@@ -5,6 +5,7 @@
 import React from 'react';
 import '../styles/Review.css';
 import StarRatings from 'react-star-ratings';
+import ReactTimeAgo from 'react-time-ago';
 import Helpful from './Helpful.jsx';
 import Unhelpful from './Unhelpful.jsx';
 
@@ -45,7 +46,8 @@ const Review = ({ review, addHelpfulRating, addUnhelpfulRating }) => {
         </div>
         <div>
           <br />
-          Posted 1 month ago.
+          <ReactTimeAgo date={review.reviewCreatedAt} />
+          {/* Posted 1 month ago. */}
         </div>
         <br />
         {review.reviewText}
