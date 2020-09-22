@@ -6,15 +6,15 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-console */
 /* eslint-disable import/extensions */
-import React from 'react';
-import '../styles/ReviewList.css';
-import StarRatings from 'react-star-ratings';
-import axios from 'axios';
-import RatingCountByStar from './RatingCountByStar.jsx';
-import FilterReview from './FilterReview.jsx';
-import Review from './Review.jsx';
+import React from "react";
+import "../styles/ReviewList.css";
+import StarRatings from "react-star-ratings";
+import axios from "axios";
+import RatingCountByStar from "./RatingCountByStar.jsx";
+import FilterReview from "./FilterReview.jsx";
+import Review from "./Review.jsx";
 
-import ReviewForm from './ReviewForm.jsx';
+import ReviewForm from "./ReviewForm.jsx";
 
 class ReviewList extends React.Component {
   constructor(props) {
@@ -23,9 +23,9 @@ class ReviewList extends React.Component {
     this.state = {
       reviews: [],
       productID: 4,
-      reviewHeading: '',
-      reviewText: '',
-      reviewUsername: '',
+      reviewHeading: "",
+      reviewText: "",
+      reviewUsername: "",
       reviewRating: 0,
       reviewRecommended: false,
       reviewQuality: 0,
@@ -34,7 +34,7 @@ class ReviewList extends React.Component {
       reviewImages: [],
       reviewAvg: 0,
       reviewCounts: {},
-      reviewEmail: '',
+      reviewEmail: "",
     };
 
     this.getReviewsByProductID = this.getReviewsByProductID.bind(this);
@@ -58,7 +58,7 @@ class ReviewList extends React.Component {
     //   console.log('IN REVIEW LIST: ', event);
     // });
     // window.addEventListener('message', this.initPort);
-    this.watchDiv('searchbar_app');
+    this.watchDiv("searchbar_app");
   }
 
   // gets reviews by the product ID that is currently in state
@@ -67,11 +67,12 @@ class ReviewList extends React.Component {
   // (e.g. # of 5 star reviews, # of 4 star reviews, etc)
 
   getReviewsByProductID(state) {
-    axios.get('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
-      params: {
-        productID: state,
-      },
-    })
+    axios
+      .get("http://ec2-3-14-15-3.us-east-2.compute.amazonaws.com/reviews", {
+        params: {
+          productID: state,
+        },
+      })
       .then((reviews) => {
         this.setState({
           reviews: reviews.data,
@@ -113,10 +114,10 @@ class ReviewList extends React.Component {
       })
       .then(() => {
         const { reviewAvg } = this.state;
-        document.getElementById('Champagne').className = reviewAvg.toFixed(1);
+        document.getElementById("Champagne").className = reviewAvg.toFixed(1);
       })
       .catch((error) => {
-        console.log('Error retrieving reviews: ', error);
+        console.log("Error retrieving reviews: ", error);
       });
   }
 
@@ -131,11 +132,13 @@ class ReviewList extends React.Component {
     // eslint-disable-next-line no-unused-vars
     let callback = (mutationsList, observer) => {
       console.log(mutationsList[0].target.className);
-      if (mutationsList[0].attributeName === 'class') {
+      if (mutationsList[0].attributeName === "class") {
         this.setState({
           productID: Number.parseInt(mutationsList[0].target.className),
         });
-        this.getReviewsByProductID(Number.parseInt(mutationsList[0].target.className));
+        this.getReviewsByProductID(
+          Number.parseInt(mutationsList[0].target.className)
+        );
       }
     };
     callback = callback.bind(this);
@@ -152,10 +155,6 @@ class ReviewList extends React.Component {
     event.preventDefault();
     this.toggleReview(event);
     const {
-      productID, reviewHeading, reviewText, reviewRating, reviewUsername,
-      reviewRecommended, reviewQuality, reviewValue, reviewEaseOfUse, reviewImages,
-    } = this.state;
-    axios.post('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/reviews', {
       productID,
       reviewHeading,
       reviewText,
@@ -166,32 +165,45 @@ class ReviewList extends React.Component {
       reviewValue,
       reviewEaseOfUse,
       reviewImages,
-      reviewCreatedAt: new Date(),
-      reviewHelpful: 0,
-      reviewUnhelpful: 0,
-    })
+    } = this.state;
+    axios
+      .post("http://ec2-3-14-15-3.us-east-2.compute.amazonaws.com/reviews", {
+        productID,
+        reviewHeading,
+        reviewText,
+        reviewRating,
+        reviewUsername,
+        reviewRecommended,
+        reviewQuality,
+        reviewValue,
+        reviewEaseOfUse,
+        reviewImages,
+        reviewCreatedAt: new Date(),
+        reviewHelpful: 0,
+        reviewUnhelpful: 0,
+      })
       .then((confirmation) => {
-        console.log('Review successfully posted: ', confirmation);
+        console.log("Review successfully posted: ", confirmation);
       })
       .then(() => {
         this.getReviewsByProductID(productID);
       })
       .then(() => {
         this.setState({
-          reviewHeading: '',
-          reviewText: '',
+          reviewHeading: "",
+          reviewText: "",
           reviewRating: 0,
-          reviewUsername: '',
+          reviewUsername: "",
           reviewRecommended: false,
           reviewQuality: 0,
           reviewValue: 0,
           reviewEaseOfUse: 0,
           reviewImages: [],
-          reviewEmail: '',
+          reviewEmail: "",
         });
       })
       .catch((error) => {
-        console.log('Error posting review: ', error);
+        console.log("Error posting review: ", error);
       });
   }
 
@@ -235,36 +247,47 @@ class ReviewList extends React.Component {
   }
 
   addHelpfulRating(productID, reviewID) {
-    axios.post('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/helpful', {
-      productID,
-      _id: reviewID,
-    })
+    axios
+      .post("http://ec2-3-14-15-3.us-east-2.compute.amazonaws.com/helpful", {
+        productID,
+        _id: reviewID,
+      })
       .then(() => this.getReviewsByProductID(productID));
   }
 
   addUnhelpfulRating(productID, reviewID) {
-    axios.post('http://ec2-18-218-79-61.us-east-2.compute.amazonaws.com/unhelpful', {
-      productID,
-      _id: reviewID,
-    })
+    axios
+      .post("http://ec2-3-14-15-3.us-east-2.compute.amazonaws.com/unhelpful", {
+        productID,
+        _id: reviewID,
+      })
       .then(() => this.getReviewsByProductID(productID));
   }
 
   // used to hide the div with the 'ReviewForm component'
   toggleReview(event) {
     event.preventDefault();
-    const reviewDiv = document.getElementById('writeReviewForm');
-    if (reviewDiv.className === 'rw-hidden' || !reviewDiv.className) {
-      reviewDiv.className = 'rw-visible';
+    const reviewDiv = document.getElementById("writeReviewForm");
+    if (reviewDiv.className === "rw-hidden" || !reviewDiv.className) {
+      reviewDiv.className = "rw-visible";
     } else {
-      reviewDiv.className = 'rw-hidden';
+      reviewDiv.className = "rw-hidden";
     }
   }
 
   render() {
     const {
-      reviewAvg, reviewCounts, reviews, reviewRating, reviewHeading, reviewText,
-      reviewQuality, reviewValue, reviewEaseOfUse, reviewUsername, reviewEmail,
+      reviewAvg,
+      reviewCounts,
+      reviews,
+      reviewRating,
+      reviewHeading,
+      reviewText,
+      reviewQuality,
+      reviewValue,
+      reviewEaseOfUse,
+      reviewUsername,
+      reviewEmail,
     } = this.state;
     return (
       <div>
@@ -293,9 +316,7 @@ class ReviewList extends React.Component {
           <div className="rating expertRating">
             Expert Rating
             <br />
-            <div className="avgRatingScore">
-              4.7
-            </div>
+            <div className="avgRatingScore">4.7</div>
             <div className="starRatings">
               <StarRatings
                 rating={4}
@@ -310,7 +331,7 @@ class ReviewList extends React.Component {
             </div>
           </div>
         </div>
-        <div style={{ borderBottom: '1px solid rgb(197, 203, 213)' }}>
+        <div style={{ borderBottom: "1px solid rgb(197, 203, 213)" }}>
           <FilterReview />
         </div>
         {reviews.map((review, idx) => (
@@ -321,9 +342,11 @@ class ReviewList extends React.Component {
             addUnhelpfulRating={this.addUnhelpfulRating}
           />
         ))}
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: "center" }}>
           <button className="showReviewButtons show">Show More</button>
-          <button className="showReviewButtons" onClick={this.toggleReview}>Write a Review</button>
+          <button className="showReviewButtons" onClick={this.toggleReview}>
+            Write a Review
+          </button>
         </div>
         <ReviewForm
           // review={this.state.addReview}
